@@ -79,7 +79,9 @@ function AuthShowcase() {
           {"Sign out"}
         </button>
       ) : (
-        <button className="btn btn-secondary">
+        <button className="btn btn-secondary" onClick={()=> {
+          void signIn("instagram")
+        }}>
           <Image
             alt="instagram logo"
             width="24"
