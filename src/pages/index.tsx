@@ -30,7 +30,7 @@ export default function Home() {
             <div
               className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
                 sessionData &&
-                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl hover:border-4 hover:border-primary"
+                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
               }`}
             >
               <h3 className="text-2xl font-bold">Find Out?</h3>
@@ -41,7 +41,7 @@ export default function Home() {
             <div
               className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
                 sessionData &&
-                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl hover:border-4 hover:border-primary"
+                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
               }`}
             >
               <h3 className="text-2xl font-bold">Get Listed?</h3>
@@ -52,7 +52,7 @@ export default function Home() {
             <div
               className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
                 sessionData &&
-                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl hover:border-4 hover:border-primary"
+                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
               }`}
             >
               <h3 className="text-2xl font-bold">Taken?</h3>
