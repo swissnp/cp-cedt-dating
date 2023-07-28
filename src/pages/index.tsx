@@ -1,11 +1,11 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
+// import Link from "next/link";
 import { api } from "~/utils/api";
 import Image from "next/image";
 
 export default function Home() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData } = useSession();
   return (
     <>
@@ -17,32 +17,46 @@ export default function Home() {
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-secondary-content sm:text-[5rem]">
-            <span className="text-[#8e0e19]"></span><span className="hover:text-[#8e0e19] delay-75 duration-300 ease-in-out"> soad </span><span className="hover:text-[#8e0e19] delay-75 duration-300 ease-in-out">mai?</span>
+            <span className="text-[#8e0e19]"></span>
+            <span className="delay-75 duration-300 ease-in-out hover:text-[#8e0e19]">
+              {" "}
+              soad{" "}
+            </span>
+            <span className="delay-75 duration-300 ease-in-out hover:text-[#8e0e19]">
+              mai?
+            </span>
           </h1>
           <div className="grid grid-cols-1 gap-4 text-base-content sm:grid-cols-3 md:gap-8 ">
-            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl'}`}>
-              <h3 className="text-2xl font-bold">
-                Find Out?
-              </h3>
+            <div
+              className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
+                sessionData &&
+                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl hover:border-4 hover:border-primary"
+              }`}
+            >
+              <h3 className="text-2xl font-bold">Find Out?</h3>
               <div className="text-lg text-base-content">
                 แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?
               </div>
             </div>
-            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl'}`}>
-              <h3 className="text-2xl font-bold">
-                Get Listed?
-              </h3>
+            <div
+              className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
+                sessionData &&
+                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl hover:border-4 hover:border-primary"
+              }`}
+            >
+              <h3 className="text-2xl font-bold">Get Listed?</h3>
               <div className="text-lg text-base-content">
                 บอกให้โลกรู้ว่าเราโสด
               </div>
             </div>
-            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl'}`}>
-              <h3 className="text-2xl font-bold">
-                Taken?
-              </h3>
-              <div className="text-lg text-base-content">
-                มีเจ้าของแล้วจ้า
-              </div>
+            <div
+              className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
+                sessionData &&
+                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl hover:border-4 hover:border-primary"
+              }`}
+            >
+              <h3 className="text-2xl font-bold">Taken?</h3>
+              <div className="text-lg text-base-content">มีเจ้าของแล้วจ้า</div>
             </div>
           </div>
           <div className="flex flex-col items-center gap-2">
@@ -58,7 +72,6 @@ export default function Home() {
 }
 
 function AuthShowcase() {
-  
   const { data: sessionData } = useSession();
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
@@ -73,15 +86,18 @@ function AuthShowcase() {
       </p>
       {sessionData ? (
         <button
-          className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          className="btn btn-secondary"
           onClick={() => void signOut()}
         >
           {"Sign out"}
         </button>
       ) : (
-        <button className="btn btn-secondary" onClick={()=> {
-          void signIn("instagram")
-        }}>
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            void signIn("instagram");
+          }}
+        >
           <Image
             alt="instagram logo"
             width="24"
