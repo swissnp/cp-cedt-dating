@@ -3,15 +3,12 @@ import Head from "next/head";
 // import Link from "next/link";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import { ServerResponse, IncomingMessage } from "http";
+import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
-  const router = useRouter();
   const { data: sessionData, status } = useSession();
   return (
     <>
