@@ -20,7 +20,7 @@ export default function Home() {
             <span className="text-[#8e0e19]"></span><span className="hover:text-[#8e0e19] delay-75 duration-300 ease-in-out"> soad </span><span className="hover:text-[#8e0e19] delay-75 duration-300 ease-in-out">mai?</span>
           </h1>
           <div className="grid grid-cols-1 gap-4 text-base-content sm:grid-cols-3 md:gap-8 ">
-            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary hover:bg-primary/60 hover:drop-shadow-2xl'}`}>
+            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl'}`}>
               <h3 className="text-2xl font-bold">
                 Find Out?
               </h3>
@@ -28,7 +28,7 @@ export default function Home() {
                 แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?
               </div>
             </div>
-            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary hover:bg-primary/60 hover:drop-shadow-2xl'}`}>
+            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl'}`}>
               <h3 className="text-2xl font-bold">
                 Get Listed?
               </h3>
@@ -36,7 +36,7 @@ export default function Home() {
                 บอกให้โลกรู้ว่าเราโสด
               </div>
             </div>
-            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary hover:bg-primary/60 hover:drop-shadow-2xl'}`}>
+            <div className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${sessionData && 'bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl'}`}>
               <h3 className="text-2xl font-bold">
                 Taken?
               </h3>
