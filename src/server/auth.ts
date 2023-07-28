@@ -23,6 +23,7 @@ declare module "next-auth" {
       name: string;
       email: string | null;
       image: string | null;
+      // sessionToken: string;
       // ...other properties
       // role: UserRole;
     };

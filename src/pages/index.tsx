@@ -3,11 +3,15 @@ import Head from "next/head";
 // import Link from "next/link";
 import { api } from "~/utils/api";
 import Image from "next/image";
-// import { getServerSession } from "next-auth/next"
-// import { authOptions } from "./api/auth/[...nextauth]"
+import { useRouter } from "next/router";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { ServerResponse, IncomingMessage } from "http";
+import { getServerAuthSession } from "~/server/auth";
+import { prisma } from "~/server/db";
 
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const router = useRouter();
   const { data: sessionData, status } = useSession();
   return (
     <>
@@ -17,7 +21,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {status === "loading" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-base-100 w-full h-full bg-opacity-90">
+        <div className="fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-base-100 bg-opacity-90">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="loading loading-spinner loading-lg"></div>
           </div>
@@ -80,23 +84,20 @@ export default function Home() {
 }
 
 function AuthShowcase() {
-  const { data: sessionData } = useSession();
+  const session = useSession();
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined }
+    { enabled: typeof window !== undefined }
   );
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
+        {session.data && <span>Logged in as {session.data.user.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
-      {sessionData ? (
-        <button
-          className="btn btn-secondary"
-          onClick={() => void signOut()}
-        >
+      {session.data ? (
+        <button className="btn btn-secondary" onClick={() => void signOut()}>
           {"Sign out"}
         </button>
       ) : (
@@ -117,6 +118,35 @@ function AuthShowcase() {
       )}
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext){
+  const session = await getServerAuthSession(context);
+  if (!session?.user?.id) {
+    return {
+      props: {},
+    }
+  }
+  const user = await prisma.user.findFirst({
+    where: {
+      id: session.user.id,
+    },
+    select: {
+      isOnboarded: true,
+    }
+  })
+  if (user?.isOnboarded) {
+    return {
+      props: {},
+    }
+  } else {
+    return {
+      redirect: {
+        destination: "/onboarding",
+        permanent: true,
+      }
+    };
+  }
 }
 
 

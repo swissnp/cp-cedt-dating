@@ -119,6 +119,28 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+const enforceUserIsOnBoarded = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  const user = await prisma.user.findFirst({
+    where: {
+      id: ctx.session.user.id,
+    },
+    select: {
+      isOnboarded: true,
+    }
+  })
+  if (!user?.isOnboarded) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
 /**
  * Protected (authenticated) procedure
  *
@@ -128,3 +150,4 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const onBoardedProcedure = t.procedure.use(enforceUserIsOnBoarded);
