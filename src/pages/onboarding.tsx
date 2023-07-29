@@ -44,7 +44,7 @@ export default function Home() {
           </div>
           <h6 className="text-3xl font-extrabold tracking-tight text-secondary-content sm:text-[4rem]">
             <span className="text-[#8e0e19] delay-75 duration-300 ease-in-out">
-              {sessionData?.user.name}{" "}
+              {`@${sessionData?.user?.name} `}
             </span>
             <span className="delay-75 duration-300 ease-in-out hover:text-[#8e0e19]">
               {"soad "}

@@ -117,13 +117,13 @@ function AuthShowcase() {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext){
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerAuthSession(context);
   if (!session?.user?.id) {
     // not logged in
     return {
       props: {},
-    }
+    };
   }
   // check if user is onboarded
   const user = await prisma.user.findFirst({
@@ -133,31 +133,30 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
     select: {
       isOnboarded: true,
       emailVerified: true,
-    }
-  })
-  if (!user?.isOnboarded) {
-    //onboarded
-    return {
-          // not onboarded
-          redirect: {
-            destination: "/onboarding",
-            permanent: true,
-          }
-        }
-  } 
-  if (!user.emailVerified) {
+    },
+  });
+  if (!user?.emailVerified) {
     // not verified
     return {
       redirect: {
         destination: "/verify",
         permanent: true,
-      }
-    }
+      },
+    };
   }
+  if (!user?.isOnboarded) {
+    //onboarded
+    return {
+      // not onboarded
+      redirect: {
+        destination: "/onboarding",
+        permanent: true,
+      },
+    };
+  }
+
   // other cases (verified and onboarded)
   return {
     props: {},
-  }
+  };
 }
-
-
