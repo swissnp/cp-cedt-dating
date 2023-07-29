@@ -58,6 +58,8 @@ model User {
     email              String?             @unique
     emailVerified      DateTime?
     image              String?
+    bio                String?             @db.Text
+    soad               Boolean?
     accounts           Account[]
     sessions           Session[]
     verificationTokens VerificationToken[]

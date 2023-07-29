@@ -7,3 +7,6 @@ export const onBoardingSchema = z.object({
 export const VerificationEmailSchema = z.object({
   email: z.string().email('Please enter your email').endsWith("@student.chula.ac.th", "Email must be @student.chula.ac.th"),
 });
+
+export type IOnBoarding = z.infer<typeof onBoardingSchema>;
+export type IVerificationEmail = z.infer<typeof VerificationEmailSchema>;

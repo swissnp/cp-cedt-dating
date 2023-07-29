@@ -1,21 +1,39 @@
 import { get } from "http";
 import Head from "next/head";
 import { useForm, Controller } from "react-hook-form";
-import { onBoardingSchema } from "~/utils/validator/userInput";
+import {
+  type IOnBoarding,
+  onBoardingSchema,
+} from "~/utils/validator/userInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession, signOut } from "next-auth/react";
+import { api } from "~/utils/api";
+import router from "next/router";
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
-  const { data: sessionData, status } = useSession();
+  const { data: sessionData } = useSession();
   const {
     register,
     handleSubmit,
     control,
+    setError,
     formState: { errors, isValid, isSubmitting },
-  } = useForm({
+  } = useForm<IOnBoarding>({
     resolver: zodResolver(onBoardingSchema),
     mode: "onBlur",
   });
+  const { mutate } = api.onBoarding.setOnboarded.useMutation({
+    onSuccess: () => {
+      if (document) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        (document.getElementById("my_modal_1") as HTMLFormElement).showModal();
+      }
+    },
+    onError: (error) => {
+      setError("root.serverError", { message: error.message });
+    },
+  });
+
   return (
     <>
       <Head>
@@ -27,6 +45,28 @@ export default function Home() {
           content="width=device-width, initial-scale=1, maximum-scale=1"
         />
       </Head>
+      <dialog id="my_modal_1" className="modal">
+        <form method="dialog" className="modal-box">
+          <h3 className="text-lg font-bold">
+            🎉 Congrats! Welcome to soad mai?
+          </h3>
+          <p className="py-4">
+            {"Now, you could find whether your crush is available or not."}
+          </p>
+          <div className="modal-action">
+            <button
+              className="btn"
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={async (e) => {
+                e.preventDefault();
+                await router.push("/");
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </form>
+      </dialog>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div
           className="btn absolute right-5 top-5"
@@ -65,42 +105,59 @@ export default function Home() {
                 placeholder="Bio"
                 {...register("bio")}
               ></textarea>
+              {
+                <label className="label pb-0">
+                  <span className="label-text-alt pb-0 text-red-500">
+                    {errors.bio?.message}
+                  </span>
+                </label>
+              }
             </div>
-            <div className="flex w-full flex-row justify-between">
-              <label className="label text-lg"> soad mai?</label>
-              <Controller
-                control={control}
-                name={"soad"}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <div className="join">
-                    <input
-                      className="btn join-item"
-                      type="radio"
-                      aria-label="soad"
-                      onBlur={onBlur} // notify when input is touched
-                      onChange={() => onChange(true)} // send value to hook form
-                      checked={value === true}
-                      ref={ref}
-                    />
-                    <input
-                      className="btn join-item"
-                      type="radio"
-                      aria-label="mai soad"
-                      onChange={() => onChange(false)} // send value to hook form
-                      checked={value === false}
-                      ref={ref}
-                    />
-                  </div>
-                )}
-              />
+            <div className="form-control">
+              <div className="flex w-full flex-row justify-between">
+                <label className="label text-lg"> soad mai?</label>
+                <Controller
+                  control={control}
+                  name={"soad"}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <div className="join">
+                      <input
+                        className="btn join-item"
+                        type="radio"
+                        aria-label="soad"
+                        onBlur={onBlur} // notify when input is touched
+                        onChange={() => onChange(true)} // send value to hook form
+                        checked={value === true}
+                        ref={ref}
+                      />
+                      <input
+                        className="btn join-item"
+                        type="radio"
+                        aria-label="mai soad"
+                        onChange={() => onChange(false)} // send value to hook form
+                        checked={value === false}
+                        ref={ref}
+                      />
+                    </div>
+                  )}
+                />
+              </div>
+              {
+                <label className="label pb-0">
+                  <span className="label-text-alt pb-0 text-red-500">
+                    {errors.soad?.message}
+                    {errors.root?.serverError?.message}
+                  </span>
+                </label>
+              }
             </div>
+
             <div
               className={`btn w-full ${
                 isValid ? "btn-secondary" : "btn-disabled"
-              }`}
-              // onClick={handleSubmit((data) => {
-
-              // })}
+              } ${isSubmitting && "loading loading-spinner"}`}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={handleSubmit((data) => mutate(data))}
             >
               Submit
             </div>

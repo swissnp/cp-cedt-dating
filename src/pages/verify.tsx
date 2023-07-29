@@ -4,7 +4,10 @@ import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { VerificationEmailSchema } from "~/utils/validator/userInput";
+import {
+  type IVerificationEmail,
+  VerificationEmailSchema,
+} from "~/utils/validator/userInput";
 import { useSession, signOut } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -20,13 +23,13 @@ export default function Verify({
 }) {
   console.log({ isLogin, verifySuccess, haveToken });
   const router = useRouter();
-  const { data: sessionData, status } = useSession();
+  const { data: sessionData } = useSession();
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isValid, isSubmitting },
-  } = useForm({
+  } = useForm<IVerificationEmail>({
     resolver: zodResolver(VerificationEmailSchema),
     mode: "onBlur",
     defaultValues: {
@@ -66,9 +69,10 @@ export default function Verify({
           <div className="modal-action">
             <button
               className="btn"
-              onClick={(e) => {
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={async (e) => {
                 e.preventDefault();
-                void router.push("/");
+                await router.push("/");
               }}
             >
               Close
@@ -141,7 +145,7 @@ export default function Verify({
               <button
                 className={`btn ${
                   !isValid || isSubmitting ? "btn-disabled" : "btn-primary"
-                } ${isSubmitting ? "loading" : ""}}`}
+                } ${isSubmitting && "loading loading-spinner"}}`}
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleSubmit((data: { email: string }) => {
                   mutate(data);
