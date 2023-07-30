@@ -34,51 +34,67 @@ export default function Home() {
             </span>
           </h1>
           <div className="grid grid-cols-1 gap-4 text-base-content sm:grid-cols-3 md:gap-8 ">
-            <Link
-              href={"/"}
-              className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
-                sessionData &&
-                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
-              }`}
-            >
-              <h3 className="text-2xl font-bold">Find Out?</h3>
-              <div className="text-lg text-base-content">
-                แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?
-              </div>
-            </Link>
-            <Link
-              href={"/onboarding"}
-              className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
-                sessionData &&
-                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
-              }`}
-            >
-              <h3 className="text-2xl font-bold">Get Listed?</h3>
-              <div className="text-lg text-base-content">
-                บอกให้โลกรู้ว่าเราโสด
-              </div>
-            </Link>
-            <Link
-              href={"/onboarding"}
-              className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
-                sessionData &&
-                "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
-              }`}
-            >
-              <h3 className="text-2xl font-bold">Taken?</h3>
-              <div className="text-lg text-base-content">มีเจ้าของแล้วจ้า</div>
-            </Link>
+            <Card
+              head="Find Out?"
+              body="แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?"
+              link="/"
+              isLogin={!!sessionData}
+            />
+            <Card
+              head="Get Listed?"
+              body="บอกให้โลกรู้ว่าเราโสด"
+              link="/onboarding"
+              isLogin={!!sessionData}
+            />
+            <Card
+              head="Taken?"
+              body="มีเจ้าของแล้วจ้า"
+              link="/onboarding"
+              isLogin={!!sessionData}
+            />
           </div>
           <div className="flex flex-col items-center gap-2">
-            {/* <p className="text-2xl text-white">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p> */}
             <AuthShowcase sessionData={sessionData ?? undefined} />
           </div>
         </div>
       </main>
     </>
   );
+}
+
+function Card({
+  head,
+  body,
+  link,
+  isLogin,
+}: {
+  head: string;
+  body: string;
+  link: string;
+  isLogin: boolean;
+}) {
+  if (isLogin) {
+    return (
+      <Link
+        href={link}
+        className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
+          isLogin && "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
+        }`}
+      >
+        <h3 className="text-2xl font-bold">{head}</h3>
+        <div className="text-lg text-base-content">{body}</div>
+      </Link>
+    );
+  } else {
+    return (
+      <div
+        className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out`}
+      >
+        <h3 className="text-2xl font-bold">{head}</h3>
+        <div className="text-lg text-base-content">{body}</div>
+      </div>
+    );
+  }
 }
 
 function AuthShowcase({ sessionData }: { sessionData?: Session }) {
