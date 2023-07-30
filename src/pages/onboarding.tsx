@@ -7,7 +7,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession, signOut } from "next-auth/react";
 import { api } from "~/utils/api";
-import router from "next/router";
+import Link from "next/link";
+import Image from "next/image";
 export default function Home() {
   const { data: sessionData } = useSession();
   const {
@@ -52,15 +53,9 @@ export default function Home() {
             {"Now, you could find whether your crush is available or not."}
           </p>
           <div className="modal-action">
-            <button
-              className="btn"
-              onClick={async (e) => {
-                e.preventDefault();
-                await router.push("/");
-              }}
-            >
-              Close
-            </button>
+            <Link className="btn btn-primary" href="/">
+              Next
+            </Link>
           </div>
         </form>
       </dialog>
@@ -76,12 +71,17 @@ export default function Home() {
         <div className="container flex flex-col items-center justify-center gap-6 px-4 py-16 sm:gap-12 ">
           <div className="avatar">
             <div className="w-28 rounded-full">
-              <img src="https://i.pravatar.cc/" />
+              <Image
+                alt="avatar"
+                src="https://i.pravatar.cc/"
+                height="28"
+                width="28"
+              />
             </div>
           </div>
           <h6 className="text-3xl font-extrabold tracking-tight text-secondary-content sm:text-[4rem]">
             <span className="text-[#8e0e19] delay-75 duration-300 ease-in-out">
-              {`@${sessionData?.user?.name} `}
+              {`${sessionData?.user?.name ?? ""} `}
             </span>
             <span className="delay-75 duration-300 ease-in-out hover:text-[#8e0e19]">
               {"soad "}

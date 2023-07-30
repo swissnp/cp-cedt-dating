@@ -1,11 +1,9 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 // import Link from "next/link";
-import { api } from "~/utils/api";
 import Image from "next/image";
 import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
-import { prisma } from "~/server/db";
 
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -82,17 +80,8 @@ export default function Home() {
 
 function AuthShowcase() {
   const session = useSession();
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: typeof window !== undefined }
-  );
-
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {session.data && <span>Logged in as {session.data.user.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
       {session.data ? (
         <button className="btn btn-secondary" onClick={() => void signOut()}>
           {"Sign out"}
@@ -119,23 +108,14 @@ function AuthShowcase() {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerAuthSession(context);
+  console.log(session);
   if (!session?.user?.id) {
     // not logged in
     return {
       props: {},
     };
   }
-  // check if user is onboarded
-  const user = await prisma.user.findFirst({
-    where: {
-      id: session.user.id,
-    },
-    select: {
-      isOnboarded: true,
-      emailVerified: true,
-    },
-  });
-  if (!user?.emailVerified) {
+  if (!session?.user?.isEmailVerified) {
     // not verified
     return {
       redirect: {
@@ -144,19 +124,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-  if (!user?.isOnboarded) {
-    //onboarded
+  if (!session?.user?.isOnboarded) {
+    // not onboarded
     return {
-      // not onboarded
       redirect: {
         destination: "/onboarding",
         permanent: true,
       },
     };
   }
-
-  // other cases (verified and onboarded)
   return {
+    // logged in and verified and onboarded
     props: {},
   };
 }

@@ -9,8 +9,8 @@ import {
 } from "~/utils/validator/userInput";
 import { useSession, signOut } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { prisma } from "~/server/db";
+import Link from "next/link";
 export default function Verify({
   isLogin,
   verifySuccess,
@@ -20,7 +20,6 @@ export default function Verify({
   verifySuccess: boolean;
   haveToken: boolean;
 }) {
-  const router = useRouter();
   const { data: sessionData } = useSession();
   const {
     register,
@@ -66,15 +65,9 @@ export default function Verify({
             }
           </p>
           <div className="modal-action">
-            <button
-              className="btn"
-              onClick={async (e) => {
-                e.preventDefault();
-                await router.push("/");
-              }}
-            >
+            <Link href="/" className="btn">
               Close
-            </button>
+            </Link>
           </div>
         </form>
       </dialog>
@@ -113,15 +106,9 @@ export default function Verify({
               <p className="text-center text-2xl font-extrabold text-success">
                 Verification Success
               </p>
-              <button
-                className={`btn`}
-                onClick={async (e) => {
-                  e.preventDefault();
-                  await router.push("/");
-                }}
-              >
-                Next Step
-              </button>
+              <Link href="/" className={`btn btn-primary`}>
+                Close
+              </Link>
             </div>
           )}
           {isLogin === true && verifySuccess === false && (
@@ -161,23 +148,24 @@ export default function Verify({
               </button>
             </div>
           )}
+          {isLogin === false &&
+            verifySuccess === false &&
+            haveToken === true && (
+              <div className="grid w-full grid-rows-1 items-center gap-5 font-bold sm:w-96 sm:justify-center">
+                <Link href="/" className={`btn btn-primary`}>
+                  Go to Home
+                </Link>
+              </div>
+            )}
         </div>
       </main>
     </>
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+const generateProps = async (context: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(context);
   if (!context.query.token || typeof context.query.token !== "string") {
-    if (!session?.user) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: true,
-        },
-      };
-    }
     return {
       props: {
         verifySuccess: false,
@@ -195,15 +183,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       identifier: true,
     },
   });
-  if (!verification && !session?.user) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: true,
-      },
-    };
-  }
-  if (!verification) {
+  if (!verification?.identifier) {
     return {
       props: {
         verifySuccess: false,
@@ -213,40 +193,42 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const verifyUser = await prisma.user.update({
-    where: {
-      email: verification.identifier,
-    },
-    data: {
-      emailVerified: {
-        set: new Date(),
+  await prisma.user
+    .update({
+      where: {
+        email: verification.identifier,
       },
-    },
-  });
+      data: {
+        emailVerified: {
+          set: new Date(),
+        },
+      },
+    })
+    .catch(() => {
+      return {
+        props: {
+          verifySuccess: false,
+          isLogin: !!session?.user,
+          haveToken: true,
+        },
+      };
+    });
 
-  if (!verifyUser && !session?.user) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: true,
+  await prisma.verificationToken
+    .delete({
+      where: {
+        token: context.query.token,
       },
-    };
-  }
-  if (!verifyUser) {
-    return {
-      props: {
-        verifySuccess: false,
-        isLogin: !!session?.user,
-        haveToken: true,
-      },
-    };
-  }
-
-  await prisma.verificationToken.delete({
-    where: {
-      token: context.query.token,
-    },
-  });
+    })
+    .catch(() => {
+      return {
+        props: {
+          verifySuccess: true,
+          isLogin: !!session?.user,
+          haveToken: true,
+        },
+      };
+    });
   return {
     props: {
       verifySuccess: true,
@@ -254,4 +236,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       haveToken: true,
     },
   };
+};
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { props } = await generateProps(context);
+  if (props.haveToken === false && props.isLogin === false) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true,
+      },
+    };
+  }
+  return { props: props };
 }

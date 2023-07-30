@@ -9,7 +9,6 @@ import {
 import InstagramProvider from "next-auth/providers/instagram";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
-
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -23,16 +22,22 @@ declare module "next-auth" {
       name: string;
       email: string | null;
       image: string | null;
+      isEmailVerified: boolean;
+      isOnboarded: boolean;
       // sessionToken: string;
       // ...other properties
       // role: UserRole;
     };
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    id : string;
+    name: string;
+    email: string | null;
+    image: string | null;
+    emailVerified: string | null;
+    isOnboarded: boolean;
+  }
 }
 
 /**
@@ -48,6 +53,10 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: user.id,
         name: user.name,
+        email: user.email,
+        image: user.image,
+        isEmailVerified: !!user.emailVerified,
+        isOnboarded: user.isOnboarded,
       },
     }),
   },
