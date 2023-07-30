@@ -16,7 +16,6 @@ export const onBoardingRouter = createTRPCRouter({
           isOnboarded: true,
         },
       });
-      console.log(user?.isOnboarded, ctx.session.user.id);
       if (user) {
         return user.isOnboarded;
       } else {
@@ -26,7 +25,6 @@ export const onBoardingRouter = createTRPCRouter({
   setOnboarded: protectedProcedure
     .input(onBoardingSchema)
     .mutation(async ({ input, ctx }) => {
-      console.log(ctx.session.user.id)
       const user = await prisma.user
         .update({
           where: {

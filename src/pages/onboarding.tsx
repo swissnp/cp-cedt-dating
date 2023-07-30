@@ -1,4 +1,3 @@
-import { get } from "http";
 import Head from "next/head";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -10,7 +9,6 @@ import { useSession, signOut } from "next-auth/react";
 import { api } from "~/utils/api";
 import router from "next/router";
 export default function Home() {
-  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData } = useSession();
   const {
     register,
@@ -56,7 +54,6 @@ export default function Home() {
           <div className="modal-action">
             <button
               className="btn"
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async (e) => {
                 e.preventDefault();
                 await router.push("/");
@@ -156,7 +153,6 @@ export default function Home() {
               className={`btn w-full ${
                 isValid ? "btn-secondary" : "btn-disabled"
               } ${isSubmitting && "loading loading-spinner"}`}
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleSubmit((data) => mutate(data))}
             >
               Submit

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { api } from "~/utils/api";
 import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
@@ -21,7 +20,6 @@ export default function Verify({
   verifySuccess: boolean;
   haveToken: boolean;
 }) {
-  console.log({ isLogin, verifySuccess, haveToken });
   const router = useRouter();
   const { data: sessionData } = useSession();
   const {
@@ -39,6 +37,7 @@ export default function Verify({
   const { mutate } = api.verify.sendVerificationEmail.useMutation({
     onSuccess: () => {
       if (document) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         (document.getElementById("my_modal_1") as HTMLFormElement).showModal();
       }
     },
@@ -69,7 +68,6 @@ export default function Verify({
           <div className="modal-action">
             <button
               className="btn"
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async (e) => {
                 e.preventDefault();
                 await router.push("/");
@@ -115,6 +113,15 @@ export default function Verify({
               <p className="text-center text-2xl font-extrabold text-success">
                 Verification Success
               </p>
+              <button
+                className={`btn`}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  await router.push("/");
+                }}
+              >
+                Next Step
+              </button>
             </div>
           )}
           {isLogin === true && verifySuccess === false && (
@@ -146,7 +153,6 @@ export default function Verify({
                 className={`btn ${
                   !isValid || isSubmitting ? "btn-disabled" : "btn-primary"
                 } ${isSubmitting && "loading loading-spinner"}}`}
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleSubmit((data: { email: string }) => {
                   mutate(data);
                 })}

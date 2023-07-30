@@ -11,6 +11,10 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked",
   ],
   rules: {
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {"checksVoidReturn": {"attributes": false}}
+    ],
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
