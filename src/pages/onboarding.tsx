@@ -10,6 +10,8 @@ import { api } from "~/utils/api";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
+import { getServerAuthSession } from "~/server/auth";
+import type { GetServerSidePropsContext } from "next";
 export default function Home() {
   const { data: sessionData } = useSession();
   const previousData = api.onBoarding.getOnboardData.useQuery({});
@@ -180,4 +182,16 @@ export default function Home() {
       </main>
     </>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(context);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 }
