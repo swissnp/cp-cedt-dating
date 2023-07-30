@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
-
+import type { Session } from "next-auth";
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData, status } = useSession();
@@ -73,7 +73,7 @@ export default function Home() {
             {/* <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p> */}
-            <AuthShowcase />
+            <AuthShowcase sessionData={sessionData ?? undefined} />
           </div>
         </div>
       </main>
@@ -81,11 +81,10 @@ export default function Home() {
   );
 }
 
-function AuthShowcase() {
-  const session = useSession();
+function AuthShowcase({ sessionData }: { sessionData?: Session }) {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      {session.data ? (
+      {sessionData ? (
         <button className="btn btn-secondary" onClick={() => void signOut()}>
           {"Sign out"}
         </button>
@@ -111,7 +110,6 @@ function AuthShowcase() {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerAuthSession(context);
-  console.log(session);
   if (!session?.user?.id) {
     // not logged in
     return {
