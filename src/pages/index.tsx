@@ -132,7 +132,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       props: {},
     };
   }
-  if (!session?.user?.isEmailVerified) {
+  if (!session.user.isEmailVerified) {
     // not verified
     return {
       redirect: {
@@ -141,7 +141,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-  if (!session?.user?.isOnboarded) {
+  if (!session.user.isOnboarded) {
     // not onboarded
     return {
       redirect: {
