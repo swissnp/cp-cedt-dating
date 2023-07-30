@@ -9,18 +9,35 @@ import { useSession, signOut } from "next-auth/react";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useMemo } from "react";
 export default function Home() {
   const { data: sessionData } = useSession();
+  const previousData = api.onBoarding.getOnboardData.useQuery({});
   const {
     register,
     handleSubmit,
     control,
     setError,
+    reset,
     formState: { errors, isValid, isSubmitting },
   } = useForm<IOnBoarding>({
     resolver: zodResolver(onBoardingSchema),
     mode: "onBlur",
+    defaultValues: useMemo(() => {
+      return {
+        bio: previousData.data?.bio ?? "",
+        soad: previousData.data?.soad ?? undefined,
+      };
+    }, [previousData]),
   });
+
+  useEffect(() => {
+    reset({
+      bio: previousData.data?.bio ?? "",
+      soad: previousData.data?.soad ?? undefined,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previousData.data]);
   const { mutate } = api.onBoarding.setOnboarded.useMutation({
     onSuccess: () => {
       if (document) {

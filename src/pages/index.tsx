@@ -1,6 +1,6 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-// import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
 import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
@@ -34,7 +34,8 @@ export default function Home() {
             </span>
           </h1>
           <div className="grid grid-cols-1 gap-4 text-base-content sm:grid-cols-3 md:gap-8 ">
-            <div
+            <Link
+              href={"/"}
               className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
                 sessionData &&
                 "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
@@ -44,8 +45,9 @@ export default function Home() {
               <div className="text-lg text-base-content">
                 แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?
               </div>
-            </div>
-            <div
+            </Link>
+            <Link
+              href={"/onboarding"}
               className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
                 sessionData &&
                 "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
@@ -55,8 +57,9 @@ export default function Home() {
               <div className="text-lg text-base-content">
                 บอกให้โลกรู้ว่าเราโสด
               </div>
-            </div>
-            <div
+            </Link>
+            <Link
+              href={"/onboarding"}
               className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
                 sessionData &&
                 "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
@@ -64,7 +67,7 @@ export default function Home() {
             >
               <h3 className="text-2xl font-bold">Taken?</h3>
               <div className="text-lg text-base-content">มีเจ้าของแล้วจ้า</div>
-            </div>
+            </Link>
           </div>
           <div className="flex flex-col items-center gap-2">
             {/* <p className="text-2xl text-white">

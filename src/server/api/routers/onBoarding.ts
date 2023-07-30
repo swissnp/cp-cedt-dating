@@ -41,4 +41,22 @@ export const onBoardingRouter = createTRPCRouter({
         });
       return user;
     }),
+  getOnboardData: protectedProcedure
+    .input(z.object({}))
+    .query(async ({ ctx }) => {
+      const user = await prisma.user.findFirst({
+        where: {
+          id: ctx.session.user.id,
+        },
+        select: {
+          bio: true,
+          soad: true,
+        },
+      });
+      if (user) {
+        return user;
+      } else {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+    }),
 });
