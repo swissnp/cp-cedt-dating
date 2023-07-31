@@ -1,4 +1,4 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
@@ -105,20 +105,9 @@ function AuthShowcase({ sessionData }: { sessionData?: Session }) {
           {"Sign out"}
         </button>
       ) : (
-        <button
-          className="btn btn-secondary"
-          onClick={() => {
-            void signIn("instagram");
-          }}
-        >
-          <Image
-            alt="instagram logo"
-            width="24"
-            height="24"
-            src="https://authjs.dev/img/providers/instagram.svg"
-          ></Image>
-          Sign in with Instagram
-        </button>
+        <Link href="/auth/login" className="btn btn-secondary">
+          Login
+        </Link>
       )}
     </div>
   );

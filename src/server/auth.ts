@@ -89,6 +89,16 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  theme: {
+    colorScheme: "light", // "auto" | "dark" | "light"
+    brandColor: "#ef9fbc", // Hex color code
+    logo: "", // Absolute URL to image
+    buttonText: "#2f2327" // Hex color code
+  },
+  pages: {
+    signIn: '/auth/signin',
+    verifyRequest: '/auth/verify-request', // (used for check email message)
+  }
 };
 
 /**
