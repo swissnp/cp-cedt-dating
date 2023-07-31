@@ -22,6 +22,27 @@ export const onBoardingRouter = createTRPCRouter({
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
     }),
+  // setOnboardedFirst: protectedProcedure
+  //   .input(onBoardingSchema)
+  //   .mutation(async ({ input, ctx }) => {
+  //     const user = await prisma.user
+  //       .update({
+  //         where: {
+  //           id: ctx.session.user.id,
+  //           name: null,
+  //         },
+  //         data: {
+  //           name: input.name,
+  //           bio: input.bio,
+  //           soad: input.soad,
+  //           isOnboarded: true,
+  //         },
+  //       })
+  //       .catch(() => {
+  //         throw new TRPCError({ code: "NOT_FOUND" });
+  //       });
+  //     return user;
+  //   }),
   setOnboarded: protectedProcedure
     .input(onBoardingSchema)
     .mutation(async ({ input, ctx }) => {
@@ -29,15 +50,39 @@ export const onBoardingRouter = createTRPCRouter({
         .update({
           where: {
             id: ctx.session.user.id,
+            name: null,
           },
           data: {
+            name: input.name,
             bio: input.bio,
             soad: input.soad,
             isOnboarded: true,
+            interests: {
+              create: input.interests,
+            },
           },
         })
-        .catch(() => {
-          throw new TRPCError({ code: "NOT_FOUND" });
+        .catch(async () => {
+          await prisma.user
+            .update({
+              where: {
+                id: ctx.session.user.id,
+                name: { not: null },
+              },
+              data: {
+                bio: input.bio,
+                soad: input.soad,
+                isOnboarded: true,
+                interests:{
+                  deleteMany: {},
+                  create: input.interests,
+                }
+                }
+              },
+            )
+            .catch(() => {
+              throw new TRPCError({ code: "CONFLICT" });
+            });
         });
       return user;
     }),
@@ -51,9 +96,17 @@ export const onBoardingRouter = createTRPCRouter({
         select: {
           bio: true,
           soad: true,
+          name: true,
+          interests: {
+            select: {
+              value: true,
+              label: true,
+            },
+          },
         },
       });
       if (user) {
+        console.log(user);
         return user;
       } else {
         throw new TRPCError({ code: "UNAUTHORIZED" });

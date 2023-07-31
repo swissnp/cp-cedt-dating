@@ -6,7 +6,7 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import InstagramProvider from "next-auth/providers/instagram";
+import EmailProvider from "next-auth/providers/email";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 /**
@@ -59,13 +59,26 @@ export const authOptions: NextAuthOptions = {
         isOnboarded: user.isOnboarded,
       },
     }),
+    signIn: ({ user }) => {
+      if (!user.email?.endsWith("@student.chula.ac.th")) {
+        return false;
+      }
+      return true;
+    }
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    InstagramProvider({
-      clientId: env.INSTAGRAM_CLIENT_ID,
-      clientSecret: env.INSTAGRAM_CLIENT_SECRET
-    }),
+    EmailProvider({
+      server: {
+        host: env.EMAIL_SERVER_HOST,
+        port: env.EMAIL_SERVER_PORT,
+        auth: {
+          user: env.EMAIL_SERVER_USER,
+          pass: env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: env.EMAIL_FROM,
+    })
     /**
      * ...add more providers here.
      *

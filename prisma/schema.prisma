@@ -53,27 +53,33 @@ model Session {
 }
 
 model User {
-    id                 String              @id @default(cuid())
-    name               String?
-    email              String?             @unique
-    emailVerified      DateTime?
-    image              String?
-    bio                String?             @db.Text
-    soad               Boolean?
-    accounts           Account[]
-    sessions           Session[]
-    verificationTokens VerificationToken[]
-    isOnboarded        Boolean             @default(false)
+    id            String     @id @default(cuid())
+    name          String?
+    email         String?    @unique
+    emailVerified DateTime?
+    image         String?
+    bio           String?    @db.Text
+    soad          Boolean?
+    accounts      Account[]
+    sessions      Session[]
+    isOnboarded   Boolean    @default(false)
+    interests     Interest[]
 }
 
 model VerificationToken {
-    id         String   @id @default(cuid())
-    userId     String
     identifier String
     token      String   @unique
     expires    DateTime
-    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([identifier, token])
+}
+
+model Interest {
+    userId String
+    value  String
+    label  String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, value])
     @@index([userId])
 }
