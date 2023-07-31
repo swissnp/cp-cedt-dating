@@ -1,13 +1,14 @@
 import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/image";
 import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import type { Session } from "next-auth";
+import { useState } from "react";
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData, status } = useSession();
+  const [findoutClicked, setFindoutClicked] = useState(false);
   return (
     <>
       <Head>
@@ -22,7 +23,10 @@ export default function Home() {
           </div>
         </div>
       )}
-      <main className="flex min-h-screen flex-col items-center justify-center">
+      <main
+        className="flex min-h-screen flex-col items-center justify-center"
+        onClick={() => setFindoutClicked(false)}
+      >
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-secondary-content sm:text-[5rem]">
             <span className="text-[#8e0e19]"></span>
@@ -33,13 +37,53 @@ export default function Home() {
               mai?
             </span>
           </h1>
-          <div className="grid grid-cols-1 gap-4 text-base-content sm:grid-cols-3 md:gap-8 ">
-            <Card
-              head="Find Out?"
-              body="แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?"
-              link="/"
-              isLogin={!!sessionData}
-            />
+          <div className="grid h-fit grid-cols-1 gap-4 text-base-content sm:grid-cols-3 md:gap-8">
+            <div className="relative flex h-full w-full">
+              <div
+                className={`absolute left-0 right-0 top-0 flex h-full w-full max-w-xs flex-col justify-between transition delay-75 duration-300 ease-in-out ${
+                  !findoutClicked ? "invisible" : "visible"
+                }`}
+              >
+                <Link
+                  href={"/handle"}
+                  className="btn btn-secondary w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFindoutClicked(true);
+                  }}
+                >
+                  by IG handle
+                </Link>
+                <Link
+                  href={"/interest"}
+                  className="btn btn-secondary w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFindoutClicked(true);
+                  }}
+                >
+                  by Interest
+                </Link>
+              </div>
+              <div
+                className={`flex h-full max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
+                  findoutClicked ? "invisible" : "visible"
+                } ${
+                  !!sessionData &&
+                  "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFindoutClicked(true);
+                }}
+              >
+                <h3 className="text-2xl font-bold">Find out</h3>
+                <div className="text-lg text-base-content">
+                  แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?
+                </div>
+              </div>
+            </div>
+
             <Card
               head="Get Listed?"
               body="บอกให้โลกรู้ว่าเราโสด"
@@ -77,7 +121,7 @@ function Card({
     return (
       <Link
         href={link}
-        className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
+        className={`flex h-full max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
           isLogin && "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
         }`}
       >
@@ -88,7 +132,7 @@ function Card({
   } else {
     return (
       <div
-        className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out`}
+        className={`flex h-full max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out`}
       >
         <h3 className="text-2xl font-bold">{head}</h3>
         <div className="text-lg text-base-content">{body}</div>
