@@ -310,9 +310,13 @@ export default function Home() {
             <div
               className={`btn w-full ${
                 isValid ? "btn-secondary" : "btn-disabled"
-              } ${status === "loading" && "loading loading-spinner"}`}
+              }`}
               onClick={handleSubmit((data) => mutate(data))}
             >
+              {isSubmitting ||
+                (status === "loading" && (
+                  <span className="loading loading-spinner"></span>
+                ))}
               Submit
             </div>
           </div>
