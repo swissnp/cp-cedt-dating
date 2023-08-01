@@ -1,5 +1,7 @@
 import { api } from "~/utils/api";
 import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 export const UserCardModal = ({
   modalId,
   handle,
@@ -22,7 +24,6 @@ export const UserCardModal = ({
       retry: false,
     }
   );
-  console.log(userDataError);
   const { data: attemptsLeft } = api.getUser.getAttemptsLeft.useQuery(
     {},
     {
@@ -52,7 +53,21 @@ export const UserCardModal = ({
         </button>
         {data?.name ? (
           <div className="mx-3 flex flex-col items-start justify-center gap-4">
-            <h3 className="text-3xl font-extrabold">{data?.name}</h3>
+            <div className="flex flex-row items-center justify-center">
+              <h3 className="text-3xl font-extrabold">{data?.name}</h3>
+              <Link
+                href={`https://www.instagram.com/${data?.name}/`}
+                className="btn mx-3"
+              >
+                {/* add instagram logo here */}
+                <Image
+                  alt="instagram logo"
+                  width="24"
+                  height="24"
+                  src="https://authjs.dev/img/providers/instagram.svg"
+                ></Image>
+              </Link>
+            </div>
             {/* place to put the user's name */}
             <div>
               <div className="py-2 text-lg font-bold text-base-content">
@@ -102,7 +117,7 @@ export const UserCardModal = ({
                 </div>
               ) : isSoad != undefined ? (
                 <div
-                  className={`badge badge-lg h-5 ${
+                  className={`badge badge-lg p-3 text-xl ${
                     isSoad ? "badge-primary" : "badge-secondary"
                   }`}
                 >

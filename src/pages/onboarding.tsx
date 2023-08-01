@@ -229,7 +229,7 @@ export default function Home() {
             </div>
             <div className="form-control flex w-full flex-none sm:w-96">
               <label className="label pt-0 text-lg">
-                <span className="label-text text-base">Interests</span>
+                <span className="label-text text-base">Interests & Games</span>
               </label>
               <Controller
                 control={control}

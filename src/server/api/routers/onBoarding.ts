@@ -106,7 +106,6 @@ export const onBoardingRouter = createTRPCRouter({
         },
       });
       if (user) {
-        console.log(user);
         return user;
       } else {
         throw new TRPCError({ code: "UNAUTHORIZED" });

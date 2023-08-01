@@ -46,7 +46,6 @@ export const getUserRouter = createTRPCRouter({
       if (user === null || user.isOnboarded === false) {
         throw new TRPCError({code: 'NOT_FOUND', message: 'This user haven\'t onboarded yet'})
       }
-      console.log(user)
       return user;
     }),
   getAttemptsLeft: onBoardedProcedure
