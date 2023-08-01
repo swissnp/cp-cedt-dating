@@ -114,7 +114,7 @@ export default function Home() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousData.data]);
-  const { mutate } = api.onBoarding.setOnboarded.useMutation({
+  const { mutate, status } = api.onBoarding.setOnboarded.useMutation({
     onSuccess: () => {
       if (document) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -310,7 +310,7 @@ export default function Home() {
             <div
               className={`btn w-full ${
                 isValid ? "btn-secondary" : "btn-disabled"
-              } ${isSubmitting && "loading loading-spinner"}`}
+              } ${status === "loading" && "loading loading-spinner"}`}
               onClick={handleSubmit((data) => mutate(data))}
             >
               Submit
