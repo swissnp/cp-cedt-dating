@@ -30,7 +30,7 @@ export const UserCardModal = ({
       refetchOnWindowFocus: false,
     }
   );
-  const { mutateAsync } = api.getUser.useEye.useMutation({
+  const { mutateAsync, status } = api.getUser.useEye.useMutation({
     onSuccess: (data) => {
       setIsSoad(data);
     },
@@ -95,6 +95,9 @@ export const UserCardModal = ({
                     await handleUseEye();
                   }}
                 >
+                  {status === "loading" && (
+                    <span className="loading loading-spinner"></span>
+                  )}
                   {!confirm ? `use 👁️ (${attemptsLeft} left)` : `confirm?`}
                 </div>
               ) : isSoad != undefined ? (
