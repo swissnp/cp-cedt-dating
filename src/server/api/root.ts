@@ -3,6 +3,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { onBoardingRouter } from "~/server/api/routers/onBoarding";
 // import { emailVerificationRouter } from "~/server/api/routers/emailVerification";
 import { userManageRouter } from "~/server/api/routers/userManage";
+import { getUserRouter } from "~/server/api/routers/getUser";
 /**
  * This is the primary router for your server.
  *
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   onBoarding: onBoardingRouter,
   // verify: emailVerificationRouter,
   user: userManageRouter,
+  getUser: getUserRouter,
 });
 
 // export type definition of API

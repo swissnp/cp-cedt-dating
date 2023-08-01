@@ -10,8 +10,14 @@ export const onBoardingSchema = z.object({
 });
 
 export const VerificationEmailSchema = z.object({
-  email: z.string().email('Please enter your email').endsWith("@student.chula.ac.th", "Email must be @student.chula.ac.th"),
+  email: z.string().email('Please enter a valid email').endsWith("@student.chula.ac.th", "Email must be @student.chula.ac.th"),
 });
+
+export const IGHandleSchema = z.object({
+  handle: z.string().min(1, "Please enter IG handle"),
+})
+
 
 export type IOnBoarding = z.infer<typeof onBoardingSchema>;
 export type IVerificationEmail = z.infer<typeof VerificationEmailSchema>;
+export type IIGHandle = z.infer<typeof IGHandleSchema>;

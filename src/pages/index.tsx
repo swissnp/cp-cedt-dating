@@ -5,10 +5,15 @@ import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import type { Session } from "next-auth";
 import { useState } from "react";
+import { UserCardModal } from "~/components/userCard";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { IGHandleSchema, type IIGHandle } from "~/utils/validator/userInput";
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData, status } = useSession();
   const [findoutClicked, setFindoutClicked] = useState(false);
+
   return (
     <>
       <Head>
@@ -37,65 +42,37 @@ export default function Home() {
               mai?
             </span>
           </h1>
-          <div className="grid h-fit grid-cols-1 gap-4 text-base-content sm:grid-cols-3 md:gap-8">
-            <div className="relative flex h-full w-full">
-              <div
-                className={`absolute left-0 right-0 top-0 flex h-full w-full max-w-xs flex-col justify-between transition delay-75 duration-300 ease-in-out ${
-                  !findoutClicked ? "invisible" : "visible"
-                }`}
-              >
-                <Link
-                  href={"/handle"}
-                  className="btn btn-secondary w-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setFindoutClicked(true);
-                  }}
-                >
-                  by IG handle
-                </Link>
-                <Link
-                  href={"/interest"}
-                  className="btn btn-secondary w-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setFindoutClicked(true);
-                  }}
-                >
-                  by Interest
-                </Link>
-              </div>
-              <div
-                className={`flex h-full max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
-                  findoutClicked ? "invisible" : "visible"
-                } ${
-                  !!sessionData &&
-                  "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setFindoutClicked(true);
-                }}
-              >
-                <h3 className="text-2xl font-bold">Find out</h3>
-                <div className="text-lg text-base-content">
-                  แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?
-                </div>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 gap-4 text-base-content sm:grid-cols-3 md:gap-8">
+            {!sessionData ? (
+              <Card
+                head="🏀 Find your community"
+                body="หาเพื่อนที่มีความชอบเหมือนกัน"
+              />
+            ) : (
+              <Card
+                head="🏀 Find your community"
+                body="หาเพื่อนที่มีความชอบเหมือนกัน"
+                link="/interest"
+              />
+            )}
 
-            <Card
-              head="Get Listed?"
-              body="บอกให้โลกรู้ว่าเราโสด"
-              link="/onboarding"
+            <CardWithForm
+              toggle={() => setFindoutClicked(true)}
+              findoutClicked={findoutClicked}
               isLogin={!!sessionData}
             />
-            <Card
-              head="Taken?"
-              body="มีเจ้าของแล้วจ้า"
-              link="/onboarding"
-              isLogin={!!sessionData}
-            />
+            {!sessionData ? (
+              <Card
+                head="📝 Get Listed"
+                body="เพิ่มข้อมูลตัวเองเพื่อให้เพื่อนๆ หาเจอ"
+              />
+            ) : (
+              <Card
+                head="📝 Get Listed"
+                body="แก้ไขข้อมูลตัวเองเพื่อให้เพื่อนๆ หาเจอ"
+                link="/onboarding"
+              />
+            )}
           </div>
           <div className="flex flex-col items-center gap-2">
             <AuthShowcase sessionData={sessionData ?? undefined} />
@@ -110,37 +87,118 @@ function Card({
   head,
   body,
   link,
-  isLogin,
 }: {
   head: string;
   body: string;
-  link: string;
-  isLogin: boolean;
+  link?: string;
 }) {
-  if (isLogin) {
+  if (link) {
     return (
       <Link
         href={link}
-        className={`flex h-full max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
-          isLogin && "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-2xl"
+        className={`flex max-w-xs flex-col gap-4 rounded-xl p-4 transition delay-75 duration-300 ease-in-out ${
+          link && "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-xl"
         }`}
       >
-        <h3 className="text-2xl font-bold">{head}</h3>
-        <div className="text-lg text-base-content">{body}</div>
+        <h3 className="flex flex-1 text-2xl font-bold">{head}</h3>
+        <div className="flex flex-1 text-lg text-base-content">{body}</div>
       </Link>
     );
   } else {
     return (
       <div
-        className={`flex h-full max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out`}
+        className={`flex max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out`}
       >
-        <h3 className="text-2xl font-bold">{head}</h3>
-        <div className="text-lg text-base-content">{body}</div>
+        <h3 className="flex flex-1 text-2xl font-bold">{head}</h3>
+        <div className="flex flex-1 text-lg text-base-content">{body}</div>
       </div>
     );
   }
 }
 
+function CardWithForm({
+  toggle,
+  findoutClicked,
+  isLogin,
+}: {
+  toggle: () => void;
+  findoutClicked: boolean;
+  isLogin: boolean;
+}) {
+  const [IGHandle, setIGHandle] = useState({
+    handle: "",
+    enabled: false,
+  });
+  const { register, handleSubmit } = useForm<IIGHandle>({
+    mode: "onBlur",
+    resolver: zodResolver(IGHandleSchema),
+  });
+  return (
+    <>
+      <UserCardModal
+        modalId="modal_ig_handle"
+        handle={IGHandle.handle}
+        enabled={IGHandle.enabled}
+      />
+      <div
+        className="relative flex w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          className={`absolute bottom-0 left-0 right-0 top-0 flex w-full max-w-xs flex-col justify-between transition delay-75 duration-300 ease-in-out md:py-5 lg:py-0 ${
+            !(findoutClicked && isLogin) ? "invisible" : "visible"
+          }`}
+        >
+          <input
+            type="text"
+            className="input input-primary mb-2 flex w-full flex-1 "
+            placeholder="IG handle"
+            {...register("handle")}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggle();
+            }}
+          ></input>
+          <div
+            className="btn btn-secondary flex w-full flex-1 "
+            onClick={handleSubmit((data) => {
+              setIGHandle({
+                handle: data.handle,
+                enabled: true,
+              });
+              if (document)
+                (
+                  document.getElementById(
+                    "modal_ig_handle"
+                  ) as HTMLDialogElement
+                ).showModal();
+              toggle();
+            })}
+          >
+            Search
+          </div>
+        </div>
+        <div
+          className={`flex w-full max-w-xs flex-col gap-4 rounded-xl bg-gray-500/50 p-4 transition delay-75 duration-300 ease-in-out ${
+            findoutClicked && isLogin ? "invisible" : "visible"
+          } ${
+            !!isLogin &&
+            "bg-primary/60 hover:bg-primary/70 hover:drop-shadow-xl"
+          }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggle();
+          }}
+        >
+          <h3 className="flex flex-1 text-2xl font-bold">🔎 Find out</h3>
+          <div className="flex flex-1 text-lg text-base-content">
+            แอบชอบแต่ไม่รู้ว่าเขาโสดรึเปล่า?
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 function AuthShowcase({ sessionData }: { sessionData?: Session }) {
   return (
     <div className="flex flex-col items-center justify-center gap-4">

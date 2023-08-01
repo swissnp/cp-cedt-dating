@@ -64,6 +64,8 @@ model User {
     sessions      Session[]
     isOnboarded   Boolean    @default(false)
     interests     Interest[]
+    attempts      Attempt[]  @relation("by")
+    views         Attempt[]  @relation("view")
 }
 
 model VerificationToken {
@@ -82,4 +84,16 @@ model Interest {
 
     @@unique([userId, value])
     @@index([userId])
+}
+
+model Attempt {
+    id        String   @id @default(cuid())
+    userId    String
+    forId     String
+    user      User     @relation("by", fields: [userId], references: [id], onDelete: Cascade)
+    forUser   User     @relation("view", fields: [forId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+
+    @@index([userId])
+    @@index([forId])
 }
