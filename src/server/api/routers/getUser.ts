@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { onBoardedProcedure, createTRPCRouter } from "../trpc";
 import { z } from "zod";
 import { prisma } from "~/server/db";
+import { interestsBaseSchema } from "~/utils/validator/userInput"; "~/utils/validator/userInput";
 const getAttemptsLeft = async (userId: string) => {
   const today = new Date();
   const todayAttempt = await prisma.attempt
@@ -114,4 +115,28 @@ export const getUserRouter = createTRPCRouter({
       }
       return isForUserSoad.attempts[0].forUser.soad;
     }),
+    getUserWithInterests: onBoardedProcedure
+      .input(z.object({ interests: interestsBaseSchema}))
+      .mutation(async ({ input }) => {
+        const users = await prisma.user.findMany({
+          where: {
+            interests: {
+              some: {
+                value: {
+                  in: input.interests.map((interest) => interest.value),
+                },
+              },
+            },
+          },
+          select: {
+            name: true,
+            bio: true,
+            isOnboarded: true,
+            interests: true,
+          },
+        }).catch(() => {
+          throw new TRPCError({code: 'INTERNAL_SERVER_ERROR', message: 'Internal Server Error'})
+        })
+        return users;
+      })
 });

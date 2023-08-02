@@ -5,7 +5,7 @@ import type { GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import type { Session } from "next-auth";
 import { useState } from "react";
-import { UserCardModal } from "~/components/userCard";
+import { UserCardModal } from "~/components/userInfoCard";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IGHandleSchema, type IIGHandle } from "~/utils/validator/userInput";
