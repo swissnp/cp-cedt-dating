@@ -92,7 +92,7 @@ export default function Interest() {
           </div>
           <div className="mx-5 overflow-scroll">
             <div className="mb-10 mt-5 flex flex-col gap-6">
-              {searchResults ? (
+              {searchResults?.[0] ? (
                 searchResults.map((user) => {
                   return (
                     <UserSearchResultCard

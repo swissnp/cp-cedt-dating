@@ -124,7 +124,9 @@ export const UserCardModal = ({
                   {isSoad ? "soad" : "mai soad"}
                 </div>
               ) : (
-                <div className="loading loading-spinner loading-lg"></div>
+                <div className="flex w-full items-center justify-center">
+                  <div className="loading loading-spinner loading-lg"></div>
+                </div>
               )}
             </div>
             {useEyeError && (
