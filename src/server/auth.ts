@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
     buttonText: "#2f2327" // Hex color code
   },
   pages: {
-    signIn: '/auth/signin',
+    signIn: '/auth/login',
     verifyRequest: '/auth/verify-request', // (used for check email message)
   }
 };
