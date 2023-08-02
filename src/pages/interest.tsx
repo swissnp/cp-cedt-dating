@@ -12,9 +12,12 @@ import { api } from "~/utils/api";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 export default function Interest() {
-  const { data: searchResults, mutate } =
-    api.getUser.getUserWithInterests.useMutation();
-  const { control, handleSubmit, watch } = useForm<IInterestsObj>({
+  const {
+    data: searchResults,
+    mutate,
+    status,
+  } = api.getUser.getUserWithInterests.useMutation();
+  const { control, handleSubmit, getValues } = useForm<IInterestsObj>({
     resolver: zodResolver(interestsObjSchema),
     mode: "onBlur",
   });
@@ -43,8 +46,8 @@ export default function Interest() {
         >
           logout
         </div>
-        <div className="absolute top-0 flex h-screen  w-full flex-col sm:w-auto">
-          <div className="z-50 mt-0 flex flex-col items-center rounded-xl bg-base-200 p-4 drop-shadow-lg sm:top-20 sm:mt-20 sm:flex-row  sm:p-6">
+        <div className="absolute top-0 flex h-screen w-full flex-col sm:w-auto">
+          <div className="z-50 mx-5 mt-5 flex flex-col items-center rounded-xl bg-base-200 p-4 drop-shadow-lg sm:top-20 sm:mt-20 sm:flex-row  sm:p-6">
             <div className="flex w-full max-w-lg flex-initial flex-grow-0 sm:w-96 sm:flex-shrink">
               <Controller
                 control={control}
@@ -87,17 +90,23 @@ export default function Interest() {
               Search
             </button>
           </div>
-          <div className="overflow-scroll">
-            <div className="mt-5 flex flex-col gap-6">
-              {searchResults?.map((user) => {
-                return (
-                  <UserSearchResultCard
-                    key={user.name}
-                    info={user}
-                    searchTerms={watch("interests")}
-                  />
-                );
-              })}
+          <div className="mx-5 overflow-scroll">
+            <div className="mb-10 mt-5 flex flex-col gap-6">
+              {searchResults ? (
+                searchResults.map((user) => {
+                  return (
+                    <UserSearchResultCard
+                      key={user.name}
+                      info={user}
+                      searchTerms={getValues("interests")}
+                    />
+                  );
+                })
+              ) : status === "loading" ? (
+                <div className="loading loading-spinner self-center"></div>
+              ) : (
+                <div className=" text-center">No results</div>
+              )}
             </div>
           </div>
         </div>
