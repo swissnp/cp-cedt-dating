@@ -13,6 +13,7 @@ import { getServerAuthSession } from "~/server/auth";
 import type { GetServerSidePropsContext } from "next";
 import Select from "react-select";
 import { options } from "~/utils/dataOptions";
+import Image from "next/image";
 
 export default function Home() {
   const previousData = api.onBoarding.getOnboardData.useQuery({
@@ -120,17 +121,24 @@ export default function Home() {
             {
               <div className="form-control ">
                 <label className="label pt-0 text-lg">
-                  <span className="label-text text-base">
-                    Instagram username
+                  <span className="label-text inline-flex items-center justify-center text-base">
+                    <Image
+                      alt="instagram logo"
+                      width="24"
+                      height="24"
+                      src="https://authjs.dev/img/providers/instagram.svg"
+                      className="mr-2"
+                    ></Image>
+                    {`IG username `}
                     {!previousData.data?.name && (
-                      <span className="label-text text-error">{` (can't be changed later)`}</span>
+                      <span className="label-text mr-2 text-error">{` (can't be changed later)`}</span>
                     )}
                   </span>
                 </label>
                 <input
-                  className={`input input-bordered  w-full sm:w-96 `}
+                  className={`input input-bordered w-full sm:w-96 `}
                   disabled={!!previousData.data?.name}
-                  placeholder="Username ex: soadmai"
+                  placeholder="IG username ex: soadmai"
                   {...register("name")}
                 ></input>
                 {
