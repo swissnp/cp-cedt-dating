@@ -11,6 +11,8 @@ import { UserSearchResultCard } from "~/components/userSearchResultCard";
 import { api } from "~/utils/api";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import type { GetServerSidePropsContext } from "next";
+import { getServerAuthSession } from "~/server/auth";
 export default function Interest() {
   const {
     data: searchResults,
@@ -113,4 +115,19 @@ export default function Interest() {
       </main>
     </>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(context);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 }
