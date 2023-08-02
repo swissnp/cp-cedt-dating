@@ -48,9 +48,9 @@ export default function Interest() {
         >
           logout
         </div>
-        <div className="absolute top-0 flex h-screen w-full flex-col sm:w-auto">
-          <div className="z-50 mx-5 mt-5 flex flex-col items-center rounded-xl bg-base-200 p-4 drop-shadow-lg sm:top-20 sm:mt-20 sm:flex-row  sm:p-6">
-            <div className="flex w-full max-w-lg flex-initial flex-grow-0 sm:w-96 sm:flex-shrink">
+        <div className="absolute top-0 flex h-screen w-full max-w-xl flex-col sm:w-auto">
+          <div className="z-50 mx-5 mt-5 flex  flex-col items-center rounded-xl bg-base-200 p-4 drop-shadow-lg sm:top-20 sm:mt-20  sm:flex-row sm:p-6">
+            <div className="flex w-full max-w-xl flex-initial flex-grow-0 sm:w-96 sm:flex-shrink">
               <Controller
                 control={control}
                 name={"interests"}
@@ -92,7 +92,7 @@ export default function Interest() {
               Search
             </button>
           </div>
-          <div className="mx-5 overflow-scroll">
+          <div className="mx-5 overflow-y-auto">
             <div className="mb-10 mt-5 flex flex-col gap-6">
               {searchResults?.[0] ? (
                 searchResults.map((user) => {
@@ -107,7 +107,7 @@ export default function Interest() {
               ) : status === "loading" ? (
                 <div className="loading loading-spinner self-center"></div>
               ) : (
-                <div className=" text-center">No results</div>
+                <div className="text-center">No results</div>
               )}
             </div>
           </div>
