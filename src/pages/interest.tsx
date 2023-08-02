@@ -9,6 +9,8 @@ import {
 import { options } from "~/utils/dataOptions";
 import { UserSearchResultCard } from "~/components/userSearchResultCard";
 import { api } from "~/utils/api";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
 export default function Interest() {
   const { data: searchResults, mutate } =
     api.getUser.getUserWithInterests.useMutation();
@@ -28,9 +30,22 @@ export default function Interest() {
         />
       </Head>
       <main className="flex h-screen flex-col items-center justify-center">
-        <div className="absolute top-0 flex h-screen flex-col  ">
-          <div className="z-50 mt-0 flex flex-col items-center rounded-xl bg-base-200 p-4 drop-shadow-lg sm:top-20 sm:mt-20 sm:flex-row sm:p-6">
-            <div className="flex w-full max-w-lg flex-initial">
+        {
+          <Link href={"/"} className="btn fixed left-5 top-5">
+            ←
+          </Link>
+        }
+        <div
+          className="btn fixed right-5 top-5"
+          onClick={() => {
+            void signOut({ callbackUrl: "/" });
+          }}
+        >
+          logout
+        </div>
+        <div className="absolute top-0 flex h-screen  w-full flex-col sm:w-auto">
+          <div className="z-50 mt-0 flex flex-col items-center rounded-xl bg-base-200 p-4 drop-shadow-lg sm:top-20 sm:mt-20 sm:flex-row  sm:p-6">
+            <div className="flex w-full max-w-lg flex-initial flex-grow-0 sm:w-96 sm:flex-shrink">
               <Controller
                 control={control}
                 name={"interests"}

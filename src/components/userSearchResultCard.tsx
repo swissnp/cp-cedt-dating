@@ -39,7 +39,7 @@ export const UserSearchResultCard = ({
               <div
                 className={`badge badge-md mx-1 my-0.5 ${
                   searchTerms.map((term) => term.value).includes(interest.value)
-                    ? "badge-primary"
+                    ? "badge-secondary"
                     : "badge-outline"
                 }`}
                 key={interest.value}
