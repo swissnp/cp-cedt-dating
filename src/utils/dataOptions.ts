@@ -1,5 +1,4 @@
 export const options = [
-  { value: "video_games", label: "🎮 Video Games" },
   { value: "reading", label: "📚 Reading" },
   { value: "cooking", label: "🍳 Cooking" },
   { value: "traveling", label: "✈️ Traveling" },
@@ -38,6 +37,7 @@ export const options = [
   { value: "astronomy", label: "🔭 Astronomy" },
   { value: "football", label: "⚽ Football" },
   { value: "board_games", label: "🎲 Board Games" },
+  { value: "video_games", label: "🎮 Video Games" },
   { value: "call_of_duty", label: "🎮 Call of Duty" },
   { value: "fortnite", label: "🎮 Fortnite" },
   { value: "minecraft", label: "🎮 Minecraft" },
